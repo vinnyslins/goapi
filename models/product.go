@@ -1,6 +1,8 @@
 package models
 
-import "goapi/db"
+import (
+	"goapi/db"
+)
 
 type Product struct {
 	ID          int
@@ -51,4 +53,16 @@ func CreateProduct(name, description string, price float64, quantity int) {
 	}
 
 	productInsert.Exec(name, description, price, quantity)
+}
+
+func DeleteProduct(id string) {
+	db := db.Connect()
+	defer db.Close()
+
+	productDelete, err := db.Prepare("DELETE FROM products WHERE id=$1")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	productDelete.Exec(id)
 }
